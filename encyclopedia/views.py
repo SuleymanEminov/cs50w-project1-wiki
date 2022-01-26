@@ -13,13 +13,15 @@ def index(request):
         "entries": util.list_entries()
     })
 
-def display_entry(request):
+def entry(request, entry_title):
     """
     This is a getter function that gets user input from index.html forms,
     and returns back a converted entry if it exsists in the entries directory
     """
 
-    entry_title = request.GET['q']
+    if request.method == "POST":
+
+        entry_title = request.POST['q']
 
 
     if (util.get_entry(entry_title) is not None):
@@ -33,4 +35,8 @@ def display_entry(request):
         "title": entry_title,
         "entry": converted_data,
     })
+    else:
+        return render(request, "encyclopedia/404.html", {
+            "title": entry_title
+        })
 
