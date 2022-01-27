@@ -6,9 +6,7 @@
 
 {% block body %}
     <!-- Body of a given entry -->
-    {% csrf_token %}
     {% autoescape off %}
-
         {{ entry }}
     {% endautoescape %}
 
