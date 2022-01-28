@@ -1,3 +1,4 @@
+from lib2to3.pytree import convert
 from django.shortcuts import redirect, render
 
 from . import util
@@ -32,17 +33,15 @@ def entry(request, title):
     """
 
     entry_file = util.get_entry(title)
-    print(entry_file)
 
     if entry_file is not None: # entry exsists in the directory
-        markdowner = Markdown() # This is to convert Markdown to HTML
-
-        converted_data = markdowner.convert(entry_file)
+        
+        
  
             
         return render(request, "encyclopedia/entry.html", {
             "title": title,
-            "entry": converted_data,
+            "entry": convert_md(entry_file),
             "search_form": SearchForm()
     })
     else: # entry doesn't exsist
@@ -57,7 +56,6 @@ def search(request):
     This function is a search function that listens to the search form 
     and returns searched article if exsists in the 'entries' directory
     """
-    print("here")
 
 
     if request.method == "POST":
@@ -73,8 +71,24 @@ def search(request):
                 # redirect to that article 
                 return redirect(reverse("entry",args=[title]))
             else: #page doesn't exsist, call search page
+
+                related_entries = []
+
+                
+                # find articles that have a substring of title and append to 
+                # list of related_entries. 
+                for entry in util.list_entries():
+                    if convert_md(util.get_entry(entry).lower()).find(title.lower()) != -1:
+                        related_entries.append(entry)
+
+
+                print(related_entries)
+
+                
+                    
                 return render(request, "encyclopedia/search.html", {
                 "title": title,
+                "related_entries": related_entries,
                 "search_form": SearchForm()
             })
 
@@ -83,3 +97,9 @@ def search(request):
 
 
 
+def convert_md(title): 
+    markdowner = Markdown() # This is to convert Markdown to HTML
+
+    converted_data = markdowner.convert(title)
+
+    return converted_data

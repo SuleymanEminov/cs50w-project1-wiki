@@ -35,3 +35,18 @@ def get_entry(title):
         return f.read().decode("utf-8")
     except FileNotFoundError:
         return None
+
+
+# def related_entries(title):
+#     """
+#     Returns a list of entries that have the query as a substring on title of entries.
+#     """
+
+#     related_entries = [] # list of related entries
+
+#     for entry in list_entries():
+#         if title.lower() in entry.lower() or entry.lower() in title.lower():
+#             related_entries.apppend(entry)
+
+#     return related_entries
+

@@ -5,12 +5,24 @@
 {% endblock %}
 
 {% block body %}
-<h1>This {{title}} does not exsist.</h1>
-<p><strong>Wikipedia does not have an article with this name.</strong></p>
+
+<h1>Search Resuls for {{title}}:</h1>
+{% if related_entries %}
+<p>Related Entries:</p>
+<ul>
+    {% for title in related_entries %}
+    <li><a href="{% url 'entry' title=title %}">{{title}}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+  <p>No search results found for "{{title}}".</p>
+</ul>
 <p>
     Please go to the                     
     <a href="{% url 'index' %}">Home</a>
     page or search for another article.
 </p>
+{% endif %}
+
 {% endblock %}
 
