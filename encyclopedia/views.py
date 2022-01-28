@@ -1,4 +1,6 @@
+from cProfile import label
 from lib2to3.pytree import convert
+from logging import PlaceHolder
 from django.shortcuts import redirect, render
 
 from . import util
@@ -11,9 +13,27 @@ from markdown2 import Markdown
 
 class SearchForm(forms.Form):
     """Class for Search form"""
-    title = forms.CharField(widget=forms.TextInput(attrs={
+    title = forms.CharField(label='', widget=forms.TextInput(attrs={
         "class": "search",
         "placeholder": "Search Encyclopedia"
+    }))
+
+class CreateForm(forms.Form):
+    """
+    Create form. Contains CharField for getting title of the entry
+    and TextArea for the content of the entry
+    """
+    title = forms.CharField(label='Title', widget=forms.TextInput(attrs={
+        "Placeholder": "Page Title",
+        "class": "form-control",
+        "id": "exampleFormControlTextarea1",
+        "rows":"15",
+
+    }))
+    content = forms.CharField(label='Content', widget=forms.Textarea(attrs={
+        "Placeholder": "Enter page's content here",
+        "class": "form-control",
+        "id": "exampleFormControlTextarea1"
     }))
 
 
@@ -96,8 +116,48 @@ def search(request):
         return redirect(reverse('index'))
 
 
+def create(request):
+    """
+    This function allows users to create a new entry
+    """
+
+    if request.method == "POST":
+        form = CreateForm(request.POST)
+
+
+        # check if title already exsists
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+
+            if util.get_entry(title) == None:
+                util.save_entry(title, content)
+                return redirect(reverse("entry", args=[title]))
+
+            else:
+                print("error! Page already exsists")
+
+    return render(request, "encyclopedia/create.html", {
+        "search_form": SearchForm(),
+        "create_form": CreateForm(),
+
+    })
+
+
+
+
+
+
+
+
+
+
 
 def convert_md(title): 
+    """
+    This function converts Md file to HTML and and returns HTML text
+    """
+
     markdowner = Markdown() # This is to convert Markdown to HTML
 
     converted_data = markdowner.convert(title)
