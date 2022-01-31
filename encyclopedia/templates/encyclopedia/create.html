@@ -12,11 +12,11 @@
         language to store entries. Learn more on the given url.
     </p>
     
-    <div class="form-group">
+    <div class="form-group w-75">
         <form action="{% url 'create' %}" method="POST">
             {%csrf_token%}
             {{create_form}}
-            <input type="submit" name="btn" class="btn btn-primary" value="Submit">
+            <input type="submit" name="btn" class="btn btn-primary mt-3" value="Submit">
         </form>
 
     </div>

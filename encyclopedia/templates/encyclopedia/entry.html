@@ -10,4 +10,10 @@
         {{ entry }}
     {% endautoescape %}
 
+    <!-- edit page button -->
+    <form action="{% url 'edit' title=title %}" method="get">
+        <input type="submit" name="btn" class="btn btn-primary mt-3" value="Edit">
+
+    </form>
+
 {% endblock %}

@@ -1,3 +1,4 @@
+from ast import arg
 from cProfile import label
 from lib2to3.pytree import convert
 from logging import PlaceHolder
@@ -23,16 +24,22 @@ class CreateForm(forms.Form):
     Create form. Contains CharField for getting title of the entry
     and TextArea for the content of the entry
     """
-    title = forms.CharField(label='Title', widget=forms.TextInput(attrs={
+    title = forms.CharField(label='',widget=forms.TextInput(attrs={
         "Placeholder": "Page Title",
-        "class": "form-control",
+        "class": "form-control mt-4",
         "id": "exampleFormControlTextarea1",
         "rows":"15",
 
     }))
-    content = forms.CharField(label='Content', widget=forms.Textarea(attrs={
+    content = forms.CharField(label='',widget=forms.Textarea(attrs={
         "Placeholder": "Enter page's content here",
-        "class": "form-control",
+        "class": "form-control pr-5 mt-3",
+        "id": "exampleFormControlTextarea1"
+    }))
+
+class EditForm(forms.Form):
+    content = forms.CharField(label='', widget=forms.Textarea(attrs={
+        "class": "form-control pr-5 mt-3",
         "id": "exampleFormControlTextarea1"
     }))
 
@@ -55,9 +62,6 @@ def entry(request, title):
     entry_file = util.get_entry(title)
 
     if entry_file is not None: # entry exsists in the directory
-        
-        
- 
             
         return render(request, "encyclopedia/entry.html", {
             "title": title,
@@ -121,6 +125,15 @@ def create(request):
     This function allows users to create a new entry
     """
 
+    # if create was reached via the link/ GET method, open create form 
+    if request.method == "GET":
+        return render(request, "encyclopedia/create.html", {
+                "create_form": EditForm(),
+                "search_form": SearchForm() 
+            }) 
+        
+      
+    # if opened via a button/ POST request run this 
     if request.method == "POST":
         form = CreateForm(request.POST)
 
@@ -142,6 +155,45 @@ def create(request):
         "create_form": CreateForm(),
 
     })
+
+
+
+def edit(request, title):
+    """
+        Edit content of the wiki page and save it to the 'entries' directory
+    """
+
+    # if opened edit by link
+    if request.method == "GET":
+        
+        content = util.get_entry(title)
+
+        if content is not None:
+
+            return render(request, "encyclopedia/edit.html", {
+                "title": title,
+                "edit_form": EditForm(initial={'content':content}),
+                "search_form": SearchForm() 
+                
+            })    
+
+
+    # if changed the content, update the file and open that file on entry.html page
+    if request.method == "POST":
+        form = EditForm(request.POST)
+
+        if form.is_valid():
+            # save content
+            content = form.cleaned_data['content']
+            util.save_entry(title, content)
+            
+            # Redirect back to entry's page
+            return redirect(reverse("entry", args=[title]))
+
+        
+
+
+
 
 
 

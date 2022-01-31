@@ -1,0 +1,27 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Edit: {{title}}
+{% endblock %}
+
+{% block body %}
+
+<h1>Edit {{title}} below:</h1>
+
+<!-- TODO: 
+    create a textarea 
+    pre-populate file content into the textarea
+
+
+-->
+<div class="form-group w-75">
+    <form action="{% url 'edit' title=title %}" method="POST">
+        {%csrf_token%}
+        {{edit_form}}
+        <input type="submit" name="btn" class="btn btn-primary mt-3" value="Submit">
+    </form>
+
+</div>
+
+
+{% endblock %}
