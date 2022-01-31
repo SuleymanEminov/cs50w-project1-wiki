@@ -8,12 +8,11 @@
 
 <h1>Edit {{title}} below:</h1>
 
-<!-- TODO: 
-    create a textarea 
-    pre-populate file content into the textarea
+<p>
+    Remember that Wiki uses <a href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax" target="_blank">Github Markdown</a> 
+    language to store entries. Learn more on the given url.
+</p>
 
-
--->
 <div class="form-group w-75">
     <form action="{% url 'edit' title=title %}" method="POST">
         {%csrf_token%}

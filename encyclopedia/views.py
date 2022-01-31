@@ -1,16 +1,10 @@
-from ast import arg
-from cProfile import label
-from lib2to3.pytree import convert
-from logging import PlaceHolder
 from django.shortcuts import redirect, render
-
 from . import util
-
-from django.http import HttpResponseRedirect
 from django import forms
 from django.urls import reverse
+from django.http import HttpResponse
 from markdown2 import Markdown
-
+import random
 
 class SearchForm(forms.Form):
     """Class for Search form"""
@@ -190,13 +184,14 @@ def edit(request, title):
             # Redirect back to entry's page
             return redirect(reverse("entry", args=[title]))
 
-        
 
-
-
-
-
-
+def random_page(request):
+    """
+        Open a random page from 'entries' directory
+    """
+    random_page = random.choice(util.list_entries())
+    # Redirect to random_page
+    return redirect(reverse("entry", args=[random_page]))
 
 
 
